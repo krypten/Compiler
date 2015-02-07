@@ -48,8 +48,6 @@ extern YYSTYPE cool_yylval;
 #include <stdlib.h>
 #include <cstdlib>
 
-int string_error = 0;
-int escape_pending = 0;
 int commentNestingLevel = 0;
 
 %}
@@ -60,21 +58,21 @@ int commentNestingLevel = 0;
  */
 
 
-DARROW      	    =>
-ASSIGN    			<-
-LE 					<=
-INTEGER   			[0-9]+
-OBJECT_IDENTIFIER 	[a-z]([a-zA-Z0-9_]*)
-TYPE_IDENTIFIER 	[A-Z]([a-zA-Z0-9_]*)
-SELF            	[:@,;(){}=<~/\-\*\+\.]
-NEWLINE   			\n
-SPACE           	[ \r\f\t\v]+
-WS 					[\n\f\r\t\v\32 ]
+DARROW				=>
+ASSIGN				<-
+LE 				<=
+INTEGER				[0-9]+
+OBJECT_IDENTIFIER 		[a-z]([a-zA-Z0-9_]*)
+TYPE_IDENTIFIER 		[A-Z]([a-zA-Z0-9_]*)
+SELF				[:@,;(){}=<~/\-\*\+\.]
+NEWLINE				\n
+SPACE				[ \r\f\t\v]+
+WS 				[\n\f\r\t\v\32 ]
 CLASS 				[cC][lL][aA][sS][sS]
 ELSE 				[eE][lL][sS][eE]
-FI 					[fF][iI]
-IF 					[iI][fF]
-IN 					[iI][nN]
+FI 				[fF][iI]
+IF 				[iI][fF]
+IN 				[iI][nN]
 INHERITS 			[iI][nN][hH][eE][rR][iI][tT][sS]
 LET 				[lL][eE][tT]
 LOOP 				[lL][oO][oO][pP]
@@ -83,7 +81,7 @@ THEN 				[tT][hH][eE][nN]
 WHILE 				[wW][hH][iI][lL][eE]
 CASE 				[cC][aA][sS][eE]
 ESAC 				[eE][sS][aA][cC]
-OF 					[oO][fF]
+OF 				[oO][fF]
 NEW 				[nN][eE][wW]
 TRUE 				t[rR][uU][eE]
 FALSE 				f[aA][lL][sS][eE]
@@ -101,8 +99,8 @@ NOT 				[nN][oO][tT]
  
 
 <INITIAL>"(*"		{ commentNestingLevel++; BEGIN(COMMENT); }
-<COMMENT>"(*"	   	{ commentNestingLevel++; }
-<COMMENT>NEWLINE    { curr_lineno++;}
+<COMMENT>"(*"		{ commentNestingLevel++; }
+<COMMENT>NEWLINE	{ curr_lineno++;}
 <COMMENT>.			{/* eat anything else */}
 <COMMENT>"*)"		{
 						commentNestingLevel--;
@@ -113,7 +111,7 @@ NOT 				[nN][oO][tT]
 							return (ERROR);
 						}
 					}
-<COMMENT><<EOF>>  	{
+<COMMENT><<EOF>>	{
 						cool_yylval.error_msg = "EOF in COMMENT";
 						BEGIN(0);
 						return ERROR;
@@ -130,8 +128,8 @@ NOT 				[nN][oO][tT]
   *  The multiple-character operators.
   */
 
-{DARROW}   	 		{ return (DARROW); }
-{ASSIGN}   			{ return (ASSIGN); }
+{DARROW				{ return (DARROW); }
+{ASSIGN}			{ return (ASSIGN); }
 {LE}				{ return (LE); }
 
  /*
@@ -139,49 +137,49 @@ NOT 				[nN][oO][tT]
   * which must begin with a lower-case letter.
   */
 
-{CLASS}   	{ return (CLASS); }
-{ELSE}    	{ return (ELSE); }
-{FI}    	{ return (FI); }
-{IF}    	{ return (IF); }
-{IN}    	{ return (IN); }
+{CLASS}		{ return (CLASS); }
+{ELSE}		{ return (ELSE); }
+{FI}		{ return (FI); }
+{IF}		{ return (IF); }
+{IN}		{ return (IN); }
 {INHERITS} 	{ return (INHERITS); }
 {ISVOID}	{ return (ISVOID); }
-{LET}     	{ return (LET); }
-{LOOP}    	{ return (LOOP); }
-{POOL}    	{ return (POOL); }
-{THEN}   	{ return (THEN); }
-{WHILE}   	{ return (WHILE); }
-{CASE}    	{ return (CASE); }
-{ESAC}    	{ return (ESAC); }
-{NEW}     	{ return (NEW); }
-{OF}    	{ return (OF); }
-{NOT}     	{ return (NOT); }
-"+"     	{ return ('+'); }
-"-"     	{ return ('-'); }
-"*"     	{ return ('*'); }
-"="     	{ return ('='); }
-"<"     	{ return ('<'); }
-"\."   		{ return ('.'); }
-"~"     	{ return ('~'); }
-","     	{ return (','); }
-";"     	{ return (';'); }
-":"     	{ return (':'); }
-"("     	{ return ('('); }
-")"     	{ return (')'); }
-"@"     	{ return ('@'); }
-"{"     	{ return ('{'); }
-"}"     	{ return ('}'); }
+{LET}		{ return (LET); }
+{LOOP}		{ return (LOOP); }
+{POOL}		{ return (POOL); }
+{THEN}		{ return (THEN); }
+{WHILE}		{ return (WHILE); }
+{CASE}		{ return (CASE); }
+{ESAC}		{ return (ESAC); }
+{NEW}		{ return (NEW); }
+{OF}		{ return (OF); }
+{NOT}		{ return (NOT); }
+"+"		{ return ('+'); }
+"-"		{ return ('-'); }
+"*"		{ return ('*'); }
+"<" 		{ return ('<'); }
+"=" 		{ return ('='); }
+"\."		{ return ('.'); }
+"~"		{ return ('~'); }
+","		{ return (','); }
+";"		{ return (';'); }
+":"		{ return (':'); }
+"("		{ return ('('); }
+")"		{ return (')'); }
+"@"		{ return ('@'); }
+"{"		{ return ('{'); }
+"}"		{ return ('}'); }
 {WS}		{}
 
 
 <INITIAL>{FALSE}	{
-                    	cool_yylval.boolean = 0;
-                    	return BOOL_CONST;
-                	}
-<INITIAL>{TRUE}     {
-                    	cool_yylval.boolean = 1;
-                    	return BOOL_CONST;
-                	}
+						cool_yylval.boolean = 0;
+						return BOOL_CONST;
+				 	}
+<INITIAL>{TRUE}		{
+						cool_yylval.boolean = 1;
+						return BOOL_CONST;
+					}
 
 <INITIAL>{NEWLINE} { curr_lineno++; }
 
@@ -189,16 +187,16 @@ NOT 				[nN][oO][tT]
 <INITIAL>{OBJECT_IDENTIFIER} {
 						cool_yylval.symbol = idtable.add_string(yytext, yyleng);
 						return (OBJECTID);
-      				}
+					}
 <INITIAL>{TYPE_IDENTIFIER} {
 						cool_yylval.symbol = idtable.add_string(yytext, yyleng);
 						return (TYPEID);
 					}
 <INITIAL>{INTEGER}  {
 						int parse_int = strtol(yytext, &yytext + yyleng, 30); 
-        				cool_yylval.symbol = inttable.add_int(parse_int); 
-        				return (INT_CONST);
-        			}
+						cool_yylval.symbol = inttable.add_int(parse_int); 
+						return (INT_CONST);
+					}
 <INITIAL>{SELF}		{ 
 						return *(yytext); /* too be addressed in later stages. */ 
 					}
@@ -213,11 +211,11 @@ NOT 				[nN][oO][tT]
 
 <INITIAL>"\"" 		{ string_buf_ptr = string_buf; BEGIN(STR); }
 <STR>"\""     		{
-      					*string_buf_ptr = '\0';
-      					cool_yylval.symbol = stringtable.add_string(string_buf);
-      					BEGIN(0);
-      					return STR_CONST;
-    				}
+						*string_buf_ptr = '\0';
+						cool_yylval.symbol = stringtable.add_string(string_buf);
+						BEGIN(0);
+						return STR_CONST;
+					}
 
 <STR><<EOF>> 		{
 						cool_yylval.error_msg = "EOF in string constant";
@@ -226,25 +224,19 @@ NOT 				[nN][oO][tT]
 					}
 <STR>NEWLINE  		{
 						curr_lineno++;
-						if (!string_error) {
-							cool_yylval.error_msg = "Unterminated string constant";
-							return(ERROR); 
-							}
 					}
 
-<STR>				{
-  "\\n"   { *string_buf_ptr++ = '\n';}
-  "\\t"   { *string_buf_ptr++ = '\t';}
-  "\\r"   { *string_buf_ptr++ = '\r';}
-  "\\b"   { *string_buf_ptr++ = '\b';}
-  "\\f"   { *string_buf_ptr++ = '\f';}
-  "\\"    { *string_buf_ptr++ = '\\';  *string_buf_ptr = '\0'; }
-  "." 	  { *string_buf_ptr++ = yytext[0]; }
-  '\0'	  {	 cool_yylval.error_msg = "String contains escaped null character.";
-            return(ERROR);
-          }
+<STR>{
+  "\\n"		{ *string_buf_ptr++ = '\n';}
+  "\\t"		{ *string_buf_ptr++ = '\t';}
+  "\\r"		{ *string_buf_ptr++ = '\r';}
+  "\\b"		{ *string_buf_ptr++ = '\b';}
+  "\\f"		{ *string_buf_ptr++ = '\f';}
+  "\\"		{ *string_buf_ptr++ = '\\';  *string_buf_ptr = '\0'; }
+  "." 		{ *string_buf_ptr++ = yytext[0]; }
+  '\0'		{	 cool_yylval.error_msg = "String contains escaped null character."; return(ERROR);
+			}
 }
-
 
 <INITIAL>.		{ 
 					cool_yylval.error_msg = yytext;
