@@ -57,14 +57,14 @@ int commentNestingLevel = 0;
  */
 
 
-DARROW          =>
-ASSIGN    <=
-INTEGER   [0-9]+
-OBJECT_IDENTIFIER [a-z]([a-zA-Z0-9_]*)
-TYPE_IDENTIFIER [A-Z]([a-zA-Z0-9_]*)
-COMMENT_START \(\*
-COMMENT_END \*\)
-NEWLINE   \n
+DARROW          	=>
+ASSIGN			<=
+INTEGER   		[0-9]+
+OBJECT_IDENTIFIER 	[a-z]([a-zA-Z0-9_]*)
+TYPE_IDENTIFIER 	[A-Z]([a-zA-Z0-9_]*)
+COMMENT_START 		\(\*
+COMMENT_END 		\*\)
+NEWLINE   		\n
 
 
 %x comment
@@ -85,9 +85,9 @@ COMMENT_START     {commentNestingLevel++; BEGIN(comment); }
             return (ERROR);
           }
           }
-  <comment>NEWLINE      {curr_lineno++;}
-  <comment>.    {/* eat anything else */}
-  <comment><<EOF>>  { cool_yylval.error_msg = "Unindented comment."; return ERROR; }
+<comment>NEWLINE      {curr_lineno++;}
+<comment>.    {/* eat anything else */}
+<comment><<EOF>>  { cool_yylval.error_msg = "Unindented comment."; return ERROR; }
 
 {OBJECT_IDENTIFIER} { cool_yylval.symbol = idtable.add_string(yytext, yyleng);
         return (OBJECTID);
@@ -109,41 +109,42 @@ COMMENT_START     {commentNestingLevel++; BEGIN(comment); }
   * which must begin with a lower-case letter.
   */
 
-class   { return (CLASS); }
-else    { return (ELSE); }
-fi    { return (FI); }
-if    { return (IF); }
-in    { return (IN); }
-inherits  { return (INHERITS); }
-isvoid    { return (ISVOID); }
-let     { return (LET); }
-loop    { return (LOOP); }
-pool    { return (POOL); }
-then    { return (THEN); }
-while     { return (WHILE); }
-case    { return (CASE); }
-esac    { return (ESAC); }
-new     { return (NEW); }
-of    { return (OF); }
-not     { return (NOT); }
-"+"     { return ('+'); }
-"-"     { return ('-'); }
-"*"     { return ('*'); }
-"="     { return ('='); }
-"<"     { return ('<'); }
-\.    { return ('.'); }
-"~"     { return ('~'); }
-","     { return (','); }
-";"     { return (';'); }
-":"     { return (':'); }
-"("     { return ('('); }
-")"     { return (')'); }
-"@"     { return ('@'); }
-"{"     { return ('{'); }
-"}"     { return ('}'); }
+class		{ return (CLASS); }
+else    	{ return (ELSE); }
+fi    		{ return (FI); }
+if    		{ return (IF); }
+in    		{ return (IN); }
+inherits	{ return (INHERITS); }
+isvoid 		{ return (ISVOID); }
+let    		{ return (LET); }
+loop    	{ return (LOOP); }
+pool    	{ return (POOL); }
+then    	{ return (THEN); }
+while     	{ return (WHILE); }
+case    	{ return (CASE); }
+esac    	{ return (ESAC); }
+new     	{ return (NEW); }
+of    		{ return (OF); }
+not     	{ return (NOT); }
+"+"     	{ return ('+'); }
+"-"     	{ return ('-'); }
+"*"     	{ return ('*'); }
+"="     	{ return ('='); }
+"<"     	{ return ('<'); }
+\.    		{ return ('.'); }
+"~"     	{ return ('~'); }
+","     	{ return (','); }
+";"     	{ return (';'); }
+":"     	{ return (':'); }
+"("     	{ return ('('); }
+")"     	{ return (')'); }
+"@"     	{ return ('@'); }
+"{"     	{ return ('{'); }
+"}"     	{ return ('}'); }
 
-{NEWLINE} { curr_lineno++; }
- /*
+{NEWLINE} 	{ curr_lineno++; }
+ 
+/*
   *  String constants (C syntax)
   *  Escape sequence \c is accepted for all characters c. Except for 
   *  \n \t \b \f, the result is c.
@@ -173,11 +174,11 @@ not     { return (NOT); }
          *string_buf_ptr++ = result;
          }
 
- <STR>\\[0-9]+ {
+<STR>\\[0-9]+ {
                cool_yylval.error_msg = "error - bad escape sequence";
          }
 
- <STR>{
+<STR>{
   "\\n" { *string_buf_ptr++ = '\n';}
   "\\t"   { *string_buf_ptr++ = '\t';}
   "\\r"   { *string_buf_ptr++ = '\r';}
